@@ -21,7 +21,7 @@ type OnBoardingRoutes = {
 
 const Stack = createNativeStackNavigator<OnBoardingRoutes>();
 
-export const OnBoardingNav = () => {
+export const OnBoardingStack = () => {
   const childScreenOptions: NativeStackNavigationOptions = {
     headerShown: false,
   };
@@ -42,7 +42,6 @@ export type OnBoardingNavigationProp = NativeStackNavigationProp<
   OnBoardingRoutes,
   keyof OnBoardingRoutes
 >;
-export type OnBoardingRouteProp = RouteProp<
-  OnBoardingRoutes,
-  keyof OnBoardingRoutes
->;
+
+export type OnBoardingRouteProp<Route extends keyof OnBoardingRoutes> =
+  RouteProp<OnBoardingRoutes, Route>;

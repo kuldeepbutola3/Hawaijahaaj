@@ -2,8 +2,11 @@ import React, { useCallback } from 'react';
 import { StyleSheet, View } from 'react-native';
 // import { appColors } from '../../../styles/appColors';
 import { OnBoardingContainer } from '../component/OnBoardingContainer';
-import { useNavigation } from '@react-navigation/native';
-import { OnBoardingNavigationProp } from '../OnBoardingNav';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import {
+  OnBoardingNavigationProp,
+  OnBoardingRouteProp,
+} from '../OnBoardingNav';
 import { appColors } from '../../../styles/appColors';
 
 export type OnBoarding1Props = {
@@ -11,7 +14,7 @@ export type OnBoarding1Props = {
 };
 
 export const OnBoarding1 = () => {
-  // const route = useRoute<OnBoardingRouteProp>();
+  // const route = useRoute<OnBoardingRouteProp>('');
   // route.params.username
   // route.params.route.params.username
 
