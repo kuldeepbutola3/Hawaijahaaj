@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
-import Icon from 'react-native-vector-icons/SimpleLineIcons';
+// import Icon from 'react-native-vector-icons/FontAwesome5';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { Touchable } from '../../../../../components/Touchable';
 
 interface IDateDateSelector {
@@ -29,7 +30,6 @@ const DateSelector = ({
       onPress={disabled ? undefined : onPress}>
       <Text style={styles.label}>{label}</Text>
       <View style={styles.containerInner}>
-        {/* <Icon name="calendar" type="SimpleLineIcons" size={30} color="white" style={styles.icon} /> */}
         <Icon name="calendar" size={30} color="white" style={styles.icon} />
         {disabled ? (
           <Text style={styles.placeholder}>

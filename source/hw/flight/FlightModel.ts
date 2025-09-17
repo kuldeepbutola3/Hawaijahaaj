@@ -1,3 +1,5 @@
+import { ClassType } from '../../constants/enums';
+
 export interface FlightPlaces {
   airportCode: string;
   cityName: string;
@@ -19,6 +21,7 @@ interface FlightSegment {
     flightNumber: string;
     fareClass: string;
     operatingCarrier: string;
+    noOfSeatAvailable: number;
   };
   noOfSeatAvailable: number;
   origin: {
@@ -55,24 +58,26 @@ interface FlightSegment {
   remisETicketEligibleark: boolean;
   flightStatus: string;
   status: string;
-  accumulatedDuration?: string;
-  cabinClass: string;
+  accumulatedDuration: string;
+
   baggage: string;
   cabinBaggage: string;
-  fareRefKey?: string;
-  airSegmentKey?: string;
+  // fareRefKey?: string;
+  // airSegmentKey?: string;
   duration: number;
   stopOver: boolean;
-  stopPointArrivalTime?: string;
-  stopPointDepartureTime?: string;
-  remark?: string;
-  airlinePNR: string;
+  // stopPointArrivalTime?: string;
+  // stopPointDepartureTime?: string;
+  // remark?: string;
+  // airlinePNR: string;
   flightInfoIndex: string;
-  fareQuote: string;
-  artFare: string;
+  // fareQuote: string;
+  // artFare: string;
   refundable: string;
-  fareBreakdown: string;
+  // fareBreakdown: string;
   lcc: boolean;
+  cabinClass: string;
+  cabinClassDesc: ClassType;
 }
 interface FlightFareRule {
   origin: string;
@@ -86,88 +91,103 @@ interface FlightFareRule {
 interface FlightFareBreakDown {
   currency: string;
   passengerType: number;
-  additionalTxnFeeOfrd: number;
-  additionalTxnFeePub: number;
+  // additionalTxnFeeOfrd: number;
+  // additionalTxnFeePub: number;
   passengerCount: number;
   baseFare: number;
   tax: number;
   yQTax: number;
   pGCharge: number;
+  discount: number;
+  taxBreakUp: Array<{
+    key: string;
+    value: number;
+  }>;
 }
 interface FlightFare {
   currency: string;
-  additionalTxnFeeOfrd: number;
-  additionalTxnFeePub: number;
+  // additionalTxnFeeOfrd: number;
+  // additionalTxnFeePub: number;
   discount: number;
-  totalBaggageCharges: number;
-  totalSeatCharges: number;
+  // totalBaggageCharges: number;
+  // totalSeatCharges: number;
   totalSpecialServiceCharges: number;
-  sgstax: number;
-  cgstax: number;
-  igstax: number;
+  // sgstax: number;
+  // cgstax: number;
+  // igstax: number;
   baseFare: number;
   tax: number;
   flat: number;
   yQTax: number;
   pGCharge: number;
   artGST: number;
+  artGSTOnMFee: number;
   artTDS: number;
   otherCharges: number;
   publishedFare: number;
-  commissionEarned: number;
-  pLBEarned: number;
-  incentiveEarned: number;
+  artIncentive: number;
+  // commissionEarned: number;
+  // pLBEarned: number;
+  // incentiveEarned: number;
   offeredFare: number;
-  tdsOnCommission: number;
-  tdsOnPLB: number;
-  tdsOnIncentive: number;
+  // tdsOnCommission: number;
+  // tdsOnPLB: number;
+  // tdsOnIncentive: number;
   serviceFee: number;
-  totalMealCharges: number;
-  transactionFee: number;
+  // totalMealCharges: number;
+  // transactionFee: number;
   managementFee: number;
-  cGSTax: number;
-  sGSTax: number;
-  iGSTax: number;
+  // cGSTax: number;
+  // sGSTax: number;
+  // iGSTax: number;
+  feeSurcharges: number;
+  fareSessionId: string;
 }
 export interface FlightSet {
-  freeMeal: boolean;
-  lcc: boolean;
+  bagRequired: Boolean;
+  seatRequired: Boolean;
+  mealRequired: Boolean;
   resultSessionId: string;
-  isFreeMeal: boolean;
   source: number;
   isLCC: boolean;
   refundable: string;
+  // freeMeal: boolean;
+  // lcc: boolean;
+
+  // isFreeMeal: boolean;
+
   isHoldAllowedWithSSR: boolean;
-  isUpsellAllowed: boolean;
-  isCouponAppilcable: boolean;
-  gSTAllowed: boolean;
+  // isUpsellAllowed: boolean;
+  // isCouponAppilcable: boolean;
+  // gSTAllowed: boolean;
   isGSTMandatory: boolean;
   airlineRemark: string;
   fare: FlightFare;
-  artFareslist: null;
+  artFareslist: Array<FlightFare>;
   fareBreakdown: Array<FlightFareBreakDown>;
   segments: Array<Array<FlightSegment>>;
-  lastTicketDate?: string;
-  ticketAdvisory?: string;
+  lastTicketDate: string;
+  ticketAdvisory: string;
   fareRules: Array<FlightFareRule>;
   airlineCode: string;
   validatingAirline: string;
-  IsHoldAllowed?: any;
-  penalty?: any;
+  // IsHoldAllowed?: any;
+  // penalty?: any;
   displayFareGroup: string;
-  additionalProperties: any;
+  // additionalProperties: any;
+
+  IsPassportRequiredAtBook: boolean;
+  IsPassportRequiredAtTicket: boolean;
+  ssrEnable: boolean;
+  isPID: boolean;
 }
+
 export interface FlightResponse {
-  flightSet?: any;
   responseStatus: number;
-  error?: any;
-  traceId?: any;
-  origin: string;
-  destination: string;
-  uniqueFlightSet: Array<FlightSet>;
-  token?: any;
+  error: {};
+  origin: string; //'DEL';
+  destination: string; //'CCU';
   results: Array<Array<FlightSet>>;
-  additionalProperties: any;
 }
 
 interface Fare {

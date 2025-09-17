@@ -66,6 +66,7 @@ export const FlightListScreen: AuraStackScreen = () => {
   const tooltipRefTime = useRef<typeof Tooltip>(null);
   const tooltipRefAirline = useRef<typeof Tooltip>(null);
 
+  console.log('flightDetail', flightDetail);
   /**max min range */
   const maxPrice =
     flightDetail?.results && flightDetail?.results?.length > 1
@@ -107,7 +108,7 @@ export const FlightListScreen: AuraStackScreen = () => {
   );
 
   /** getting filter arrray for response  */
-  const uniqueFlightSet = flightDetail?.uniqueFlightSet;
+  const uniqueFlightSet = flightDetail?.results[0];
   const uniqueFlightSetList = Array.isArray(uniqueFlightSet)
     ? uniqueFlightSet
     : [];
@@ -610,13 +611,13 @@ export const FlightListScreen: AuraStackScreen = () => {
                     <Divider />
                     {item.id !== 0 && item.id !== 4 && (
                       <Tooltip
-                        ref={
-                          item.id === 1
-                            ? tooltipRefNonStop
-                            : item.id === 2
-                            ? tooltipRefTime
-                            : tooltipRefAirline
-                        }
+                        // ref={
+                        //   item.id === 1
+                        //     ? tooltipRefNonStop
+                        //     : item.id === 2
+                        //     ? tooltipRefTime
+                        //     : tooltipRefAirline
+                        // }
                         {...popOverView(item.id)}
                         closeOnlyOnBackdropPress
                         overlayColor="rgba(0,0,0,0.5)"

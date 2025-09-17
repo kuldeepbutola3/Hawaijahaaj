@@ -1,24 +1,26 @@
-import React, { ReactNode, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import {
   Image,
   SafeAreaView,
   StyleSheet,
   Text,
   View,
-  Button,
+  ImageSourcePropType,
+  ScrollView,
 } from 'react-native';
-// import { appColors } from '../../../styles/appColors';
-import { imageOnBoard } from '../assets/image';
-// import { Button } from '../../../components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { OnBoardingNavigationProp } from '../OnBoardingNav';
 import { appColors } from '../../../styles/appColors';
-// import { OnBoardingProps } from '../OnBoardingNav';
+import { Button } from '../../../components/Button';
+import { AppLogo } from '../../component/AppLogo';
 
 export const OnBoardingContainer: React.FC<{
-  children: ReactNode;
+  source: ImageSourcePropType;
+  title: String;
+  subtitle: String;
+  slideValue: number;
   nextTapped: () => void;
-}> = ({ children, nextTapped }) => {
+}> = ({ source, title, subtitle, slideValue, nextTapped }) => {
   const navigation = useNavigation<OnBoardingNavigationProp>();
 
   const skipTapped = useCallback(() => {
@@ -27,44 +29,67 @@ export const OnBoardingContainer: React.FC<{
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={styles.container}>
-        <View style={styles.topContainer}>
-          <View style={styles.logoContainer}>
-            <View style={styles.imageContainer}>
-              <Image style={styles.image} source={imageOnBoard.logo} />
+      <ScrollView>
+        <View style={styles.container}>
+          <View style={styles.topContainer}>
+            <View style={styles.logoContainer}>
+              <AppLogo size={70} />
+              <Button
+                title="Skip"
+                buttonStyle={{ backgroundColor: appColors.transparent }}
+                onPress={skipTapped}
+              />
             </View>
-            <Button
-              title="Skip"
-              // bgColor={appColors.transparent}
-              onPress={skipTapped}
-            />
+            <View style={styles.containerImage}>
+              <Image source={source} />
+            </View>
           </View>
-          {children}
+          <View style={styles.middleContainer}>
+            <Text style={styles.middleContaineTitle}>{title}</Text>
+            <Text style={styles.middleContaineSubTitle}>{subtitle}</Text>
+            <Bar slide={slideValue} />
+          </View>
+          <Button
+            // eslint-disable-next-line react-native/no-inline-styles
+            buttonStyle={{
+              marginHorizontal: 52,
+            }}
+            onPress={nextTapped}
+            title="Next"
+          />
         </View>
-        <View style={styles.middleContainer}>
-          <Text style={styles.middleContaineTitle}>Welcome!!!</Text>
-        </View>
-        <Button
-          onPress={nextTapped}
-          // containerStyle={styles.buttonNext}
-          title="Next"
-          // bgColor={appColors.buttonGreen}
-        />
-      </View>
+      </ScrollView>
     </SafeAreaView>
+  );
+};
+
+const Bar: React.FC<{ slide: number }> = ({ slide }) => {
+  const alignItems =
+    slide === 1 ? 'flex-start' : slide === 2 ? 'center' : 'flex-end';
+  return (
+    <View
+      style={{
+        ...styles.barContainer,
+        alignItems,
+      }}>
+      <View style={styles.barInnerContainer} />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: appColors.defaultColor },
   container: {
-    flex: 1,
     paddingTop: 16,
-    paddingBottom: 60,
+    paddingBottom: 10,
     marginHorizontal: 24,
   },
-  topContainer: { flex: 1 },
+  topContainer: {},
   logoContainer: { flexDirection: 'row', justifyContent: 'space-between' },
+  containerImage: {
+    paddingTop: 20,
+    alignItems: 'center',
+  },
   imageContainer: {
     width: 70,
     height: 70,
@@ -75,14 +100,38 @@ const styles = StyleSheet.create({
   },
   image: { width: 50, height: 63.4 },
   middleContainer: {
-    height: 220,
+    marginTop: -90,
     borderRadius: 24,
-    opacity: 0.5,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    marginBottom: -24,
-    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    marginBottom: -20,
     alignItems: 'center',
+    padding: 26,
   },
-  middleContaineTitle: { color: appColors.white, fontSize: 22 },
+  middleContaineTitle: {
+    color: appColors.white,
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  middleContaineSubTitle: {
+    color: appColors.white,
+    fontSize: 16,
+    textAlign: 'center',
+    margin: 26,
+  },
   buttonNext: { marginHorizontal: 34 },
+  barContainer: {
+    width: 210,
+    height: 4,
+    backgroundColor: appColors.white,
+    borderRadius: 2,
+    marginBottom: 20,
+  },
+  barInnerContainer: {
+    width: 210 / 3,
+    height: 4,
+    backgroundColor: appColors.red,
+    borderRadius: 2,
+  },
 });

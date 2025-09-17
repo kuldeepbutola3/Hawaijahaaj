@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 // import { RootStateObj } from 'src/redux/rootReducer';
 import { IDGSession, SessionState } from './SessionModel';
 import { refreshToken, userData } from './sessionAPI';
-import { configureDefault, configureUserDataDefault } from '../HWClient';
+import { configureDefault } from '../HWClient';
 import { UserData } from '../user/UserModel';
 import { RootStateObj } from '../../redux/rootReducer';
 
@@ -33,7 +33,6 @@ export const doFetchUserData = createAsyncThunk<
   // Types for ThunkAPI
   RootStateObj
 >('session/userData', async () => {
-  configureUserDataDefault();
   return userData();
 });
 

@@ -11,9 +11,10 @@ import {
 import DateTimePicker, {
   IOSNativeProps,
   AndroidNativeProps,
+  DateTimePickerEvent,
 } from '@react-native-community/datetimepicker';
 // import { IOSPicker } from 'src/components/IOSPicker';
-// import { TextInput, TextInputProps } from './TextInput';
+
 import { Button } from './Button';
 import { ComponentProps } from '../types/componentProps';
 import { IOSPicker } from './IOSPicker';
@@ -46,7 +47,7 @@ const AndroidDatePicker: React.FC<DatePickerProps & ComponentProps> = ({
   const onPress = useCallback(() => setShowPicker(true), []);
 
   const _onChange = useCallback(
-    (_: Event, value?: Date) => {
+    (_: DateTimePickerEvent, value?: Date) => {
       setShowPicker(false);
       value && onChange && onChange(value);
     },
@@ -58,7 +59,9 @@ const AndroidDatePicker: React.FC<DatePickerProps & ComponentProps> = ({
       <TouchableOpacity onPress={onPress} style={styles.touchableContent}>
         {children}
       </TouchableOpacity>
-      {showPicker && <DateTimePicker {...datePickerProps} onChange={_onChange} />}
+      {showPicker && (
+        <DateTimePicker {...datePickerProps} onChange={_onChange} />
+      )}
     </View>
   );
 };
@@ -75,7 +78,7 @@ const IOSDatePicker: React.FC<DatePickerProps & ComponentProps> = ({
   const onPress = useCallback(() => setShowPicker(true), []);
   const onRequestClose = useCallback(() => setShowPicker(false), []);
 
-  const _onChange = useCallback((_: Event, _value?: Date) => {
+  const _onChange = useCallback((_: DateTimePickerEvent, _value?: Date) => {
     _value && setLocalDate(_value);
   }, []);
 
@@ -100,19 +103,23 @@ const IOSDatePicker: React.FC<DatePickerProps & ComponentProps> = ({
             onPress={onDonePress}
           />
         </View>
-        <DateTimePicker onChange={_onChange} {...datePickerProps} value={localDate} />
+        <DateTimePicker
+          onChange={_onChange}
+          {...datePickerProps}
+          value={localDate}
+        />
       </SafeAreaView>
     </IOSPicker>
   );
 };
 
-type IOSPickerProps = {
-  touchableContent: React.ReactNode;
-  style?: StyleProp<ViewStyle>;
-  showPicker: boolean;
-  onPress: () => void;
-  onRequestClose: () => void;
-};
+// type IOSPickerProps = {
+//   touchableContent: React.ReactNode;
+//   style?: StyleProp<ViewStyle>;
+//   showPicker: boolean;
+//   onPress: () => void;
+//   onRequestClose: () => void;
+// };
 
 const styles = StyleSheet.create({
   container: {} as ViewStyle,

@@ -1,9 +1,18 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View, TextInput } from 'react-native';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  TextInput,
+  ScrollView,
+} from 'react-native';
 import { Text } from 'react-native-elements';
-import { ScrollView } from 'react-native-gesture-handler';
-import { FlightPlaces } from 'src/idg/flight/FlightModel';
-const PlaceSearchField: FC<any> = ({
+import { FlightPlaces } from '../../../../flight/FlightModel';
+// import { FlightPlaces } from 'src/idg/flight/FlightModel';
+type prop = {
+  places?: Array<FlightPlaces>;
+};
+const PlaceSearchField: FC<prop> = ({
   type,
   onChangeText,
   places,
@@ -23,7 +32,10 @@ const PlaceSearchField: FC<any> = ({
     // console.log('inputRefMod.current', inputRefMod.current);
   }, [selectedPlace]);
   const placesAvailable =
-    showInput && inputRef.current?.isFocused() && places instanceof Array && places.length > 0;
+    showInput &&
+    inputRef.current?.isFocused() &&
+    places instanceof Array &&
+    places.length > 0;
 
   console.log('placesAvailable.......', placesAvailable, places, showInput);
 
@@ -41,57 +53,47 @@ const PlaceSearchField: FC<any> = ({
               onChangeText={onChangeText}
               placeholder={placeholder}
             />
-            {!showInput && <Text style={styles.input}>{selectedPlace?.airportName}</Text>}
+            {!showInput && (
+              <Text style={styles.input}>{selectedPlace?.airportName}</Text>
+            )}
           </>
         ) : (
-          <TouchableOpacity style={{ width: '100%' }} onPress={() => setShowInput(true)}>
+          <TouchableOpacity
+            style={{ width: '100%' }}
+            onPress={() => setShowInput(true)}>
             <View style={styles.containerInner}>
               <Text style={styles.cityNameLabel}>{selectedPlace.cityName}</Text>
               <View style={styles.cityCodeLabelView}>
-                <Text style={styles.cityCodeLabel}>{selectedPlace.cityCode}</Text>
+                <Text style={styles.cityCodeLabel}>
+                  {selectedPlace.cityCode}
+                </Text>
               </View>
             </View>
-            {!showInput && <Text style={styles.input}>{selectedPlace?.airportName}</Text>}
+            {!showInput && (
+              <Text style={styles.input}>{selectedPlace?.airportName}</Text>
+            )}
           </TouchableOpacity>
         )}
         {/* <ModalDropdown ref={inputRefMod} options={['option 1', 'option 2']}>
         </ModalDropdown> */}
       </View>
-      {placesAvailable && (
+      {placesAvailable ? (
         <View style={[styles.suggestionContainer]}>
           <ScrollView>
-            {places.map((item: FlightPlaces) => {
+            {places?.map((item: FlightPlaces) => {
               const handlePlaceSelect = () => onSelectPlace(item);
               return (
                 <TouchableOpacity
                   onPress={handlePlaceSelect}
-                  style={styles.suggestionItemContainer}
-                >
+                  style={styles.suggestionItemContainer}>
                   <Text style={styles.cityLabel}>{item.cityName}</Text>
                   <Text style={styles.airportLabel}>{item.airportName}</Text>
                 </TouchableOpacity>
               );
             })}
           </ScrollView>
-          {/* <FlatList
-            contentContainerStyle={{ flexGrow: 1 }}
-            data={places}
-            renderItem={({ item }) => {
-              const handlePlaceSelect = () => onSelectPlace(item);
-              return (
-                <TouchableOpacity
-                  onPress={handlePlaceSelect}
-                  style={styles.suggestionItemContainer}
-                >
-                  <Text style={styles.cityLabel}>{item.cityName}</Text>
-                  <Text style={styles.airportLabel}>{item.airportName}</Text>
-                </TouchableOpacity>
-              );
-            }}
-            // style={styles.placeAvailable}
-          /> */}
         </View>
-      )}
+      ) : null}
     </View>
   );
 };

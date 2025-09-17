@@ -4,6 +4,7 @@ import {
   Button as RNEButton,
   ButtonProps as RNEButtonProps,
 } from 'react-native-elements';
+import { appColors } from '../../styles/appColors';
 
 export type ButtonProps = RNEButtonProps & {
   bgColor?: string;
@@ -51,6 +52,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     // borderWidth: 2,
     paddingVertical: 0,
+    backgroundColor: appColors.button,
   } as ViewStyle,
   disabled: {
     opacity: 0.3,

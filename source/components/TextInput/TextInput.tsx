@@ -9,7 +9,12 @@ import {
   View,
   TextInput as RNTextInput,
 } from 'react-native';
-import { DropdownPickerProps, DropdownPicker, PickerItem } from 'src/components/DropdownPicker';
+import {
+  DropdownPickerProps,
+  DropdownPicker,
+  PickerItem,
+} from '../DropdownPicker';
+// import { DropdownPickerProps, DropdownPicker, PickerItem } from 'src/components/DropdownPicker';
 
 export type TextInputProps = InputProps & {
   translucent?: boolean;
@@ -26,13 +31,15 @@ export const TextInput: FC<TextInputProps> = ({
   ...inputProps
 }) => {
   const [focused, setFocused] = useState(false);
-  type FocusEvent = Parameters<Exclude<TextInputProps['onFocus'], undefined>>[0];
+  type FocusEvent = Parameters<
+    Exclude<TextInputProps['onFocus'], undefined>
+  >[0];
   const _onFocus = useCallback(
     (e: FocusEvent) => {
       setFocused(true);
       onFocus && onFocus(e);
     },
-    [onFocus]
+    [onFocus],
   );
   type BlurEvent = Parameters<Exclude<TextInputProps['onBlur'], undefined>>[0];
   const _onBlur = useCallback(
@@ -40,11 +47,15 @@ export const TextInput: FC<TextInputProps> = ({
       setFocused(false);
       onBlur && onBlur(e);
     },
-    [onBlur]
+    [onBlur],
   );
 
   const focusedStyle = focused ? styles.focused : {};
-  const _containerStyle = StyleSheet.flatten([styles.container, focusedStyle, containerStyle]);
+  const _containerStyle = StyleSheet.flatten([
+    styles.container,
+    focusedStyle,
+    containerStyle,
+  ]);
 
   //#region Dropdown specific code
   const firstItem = dropdownItems?.find(Boolean);
@@ -55,7 +66,7 @@ export const TextInput: FC<TextInputProps> = ({
       onChangeText && onChangeText(item?.value);
       setSelectedItem(item);
     },
-    [onChangeText]
+    [onChangeText],
   );
   const dropdownInputProps = dropdownItems && {
     inputComponent: CustomInputComponent,
@@ -85,8 +96,7 @@ export const TextInput: FC<TextInputProps> = ({
       style={_containerStyle}
       selectedItem={selectedItem}
       onValueChange={onValueChange}
-      items={dropdownItems}
-    >
+      items={dropdownItems}>
       {ChildInput}
     </DropdownPicker>
   ) : (

@@ -1,10 +1,9 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, View } from 'react-native';
-// import { appColors } from '../../../styles/appColors';
 import { OnBoardingContainer } from '../component/OnBoardingContainer';
 import { useNavigation } from '@react-navigation/native';
 import { OnBoardingNavigationProp } from '../OnBoardingNav';
-import { appColors } from '../../../styles/appColors';
+import { imageOnBoard } from '../assets/image';
+import { StringConstant } from '../constants/stringConstant';
 
 export const OnBoarding2 = () => {
   const navigation = useNavigation<OnBoardingNavigationProp>();
@@ -13,12 +12,12 @@ export const OnBoarding2 = () => {
   }, [navigation]);
 
   return (
-    <OnBoardingContainer nextTapped={nextTapped}>
-      <View style={styles.container}></View>
-    </OnBoardingContainer>
+    <OnBoardingContainer
+      nextTapped={nextTapped}
+      source={imageOnBoard.onboarding2}
+      title={StringConstant.OnBoarding2Title}
+      subtitle={StringConstant.OnBoarding2SubTitle}
+      slideValue={2}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: appColors.black },
-});

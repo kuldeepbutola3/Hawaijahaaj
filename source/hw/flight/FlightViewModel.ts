@@ -14,9 +14,11 @@ export function makeFlightViewModel(
   // console.log('aaa  ', JSON.stringify(flight.segments.length));
 
   if (flight?.segments?.length > 0) {
-    return flight?.segments?.map(item => {
-      return getSegment(flight, item, onPress, t);
-    });
+    return [getSegment(flight, flight?.segments[0], onPress, t)];
+    /** Need to check why we added this */
+    // return flight?.segments?.map(item => {
+    //   return getSegment(flight, item, onPress, t);
+    // });
   }
 
   return undefined;

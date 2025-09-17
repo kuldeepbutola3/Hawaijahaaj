@@ -26,6 +26,7 @@ export type ClientOptions = {
 };
 
 const client = axios.create();
+const globalClient = axios.create();
 /**
  * Even though false is the default, this line will be here
  * so we can document the reason it's explicitly false. Right now,
@@ -45,10 +46,11 @@ export const configureBaseUrl = (env: IDGEnvType) => {
   const BaseURL = {
     prod: '',
     staging: '',
-    test: 'http://testapi.besttoursofindia.in',
+    test: 'https://testapi.gapiinfotech.com/', // 'http://testapi.besttoursofindia.in',
   };
   client.defaults.baseURL = BaseURL[env];
-  // configureDefault();
+  globalClient.defaults.baseURL = BaseURL[env];
+  configureDefault();
   // client.defaults.headers = {
   //   Authorization: 'Basic NDA4NjExMDAwMzI6N2I1ODYyNDYtZGEwNi00NmFhLTgwZmItNmNmZjM2YjNkOTRk',
   // };
@@ -68,17 +70,19 @@ export const setTokens = (tokens: string) => {
 };
 
 export const configureDefault = () => {
-  getClient().defaults.headers.common = {
+  client.defaults.headers.common = {
     Authorization:
-      'Basic NDA4NjExMDAwMzI6N2I1ODYyNDYtZGEwNi00NmFhLTgwZmItNmNmZjM2YjNkOTRk',
+      // 'Basic NDA4NjExMDAwMzI6N2I1ODYyNDYtZGEwNi00NmFhLTgwZmItNmNmZjM2YjNkOTRk',
+      'Basic MTM2NzkyNjk3NTQ6ZjA2MDg3MzgtNTI4MS00ZjE0LWEyNjYtM2M5N2JiOTE0NmNh',
   };
 };
-export const configureUserDataDefault = () => {
-  getClient().defaults.headers.common = {
-    Authorization:
-      'Basic NDA4NjExMDAwMzI6N2I1ODYyNDYtZGEwNi00NmFhLTgwZmItNmNmZjM2YjNkOTRk',
-  };
-};
+// export const configureUserDataDefault = () => {
+//   getClient().defaults.headers.common = {
+//     Authorization:
+//       // 'Basic NDA4NjExMDAwMzI6N2I1ODYyNDYtZGEwNi00NmFhLTgwZmItNmNmZjM2YjNkOTRk',
+//       'Basic MTM2NzkyNjk3NTQ6ZjA2MDg3MzgtNTI4MS00ZjE0LWEyNjYtM2M5N2JiOTE0NmNh',
+//   };
+// };
 
 configureBaseUrl('test');
 
@@ -91,10 +95,12 @@ const _options = {
  * Gets an Axios client that is configured for the current IDG environment.
  * If the client has not already been constructed, this call will construct it.
  */
-export const getClient = <
-  Endpoint extends string,
->(): IDGAxiosInstance<Endpoint> => {
+export const getClient = (): AxiosInstance => {
   return client;
+};
+
+export const getGlobalClient = (): AxiosInstance => {
+  return globalClient;
 };
 
 /**
@@ -163,7 +169,7 @@ export async function getIDGData<T>(
   url: HWEndpoint,
   params?: AxiosRequestConfig['params'],
 ): Promise<T> {
-  return getClient<HWEndpoint>()
+  return getClient()
     .get<T>(url, { params })
     .then((response: AxiosResponse) => {
       const { data } = response;
@@ -172,40 +178,40 @@ export async function getIDGData<T>(
     .catch(logErrorAndReject);
 }
 
-export interface IDGAxiosInstance<Endpoint extends string>
-  extends AxiosInstance {
-  get<T = unknown, R = AxiosResponse<T>>(
-    url: Endpoint,
-    config?: IDGAxiosRequestConfig<Endpoint>,
-  ): Promise<R>;
-  delete<T = unknown, R = AxiosResponse<T>>(
-    url: Endpoint,
-    config?: IDGAxiosRequestConfig<Endpoint>,
-  ): Promise<R>;
-  head<T = unknown, R = AxiosResponse<T>>(
-    url: Endpoint,
-    config?: IDGAxiosRequestConfig<Endpoint>,
-  ): Promise<R>;
-  options<T = unknown, R = AxiosResponse<T>>(
-    url: Endpoint,
-    config?: IDGAxiosRequestConfig<Endpoint>,
-  ): Promise<R>;
-  post<T = unknown, R = AxiosResponse<T>>(
-    url: Endpoint,
-    data?: unknown,
-    config?: IDGAxiosRequestConfig<Endpoint>,
-  ): Promise<R>;
-  put<T = unknown, R = AxiosResponse<T>>(
-    url: Endpoint,
-    data?: unknown,
-    config?: IDGAxiosRequestConfig<Endpoint>,
-  ): Promise<R>;
-  patch<T = unknown, R = AxiosResponse<T>>(
-    url: Endpoint,
-    data?: unknown,
-    config?: IDGAxiosRequestConfig<Endpoint>,
-  ): Promise<R>;
-}
+// export interface IDGAxiosInstance<Endpoint extends string>
+//   extends AxiosInstance {
+//   get<T = unknown, R = AxiosResponse<T>>(
+//     url: Endpoint,
+//     config?: IDGAxiosRequestConfig<Endpoint>,
+//   ): Promise<R>;
+//   delete<T = unknown, R = AxiosResponse<T>>(
+//     url: Endpoint,
+//     config?: IDGAxiosRequestConfig<Endpoint>,
+//   ): Promise<R>;
+//   head<T = unknown, R = AxiosResponse<T>>(
+//     url: Endpoint,
+//     config?: IDGAxiosRequestConfig<Endpoint>,
+//   ): Promise<R>;
+//   options<T = unknown, R = AxiosResponse<T>>(
+//     url: Endpoint,
+//     config?: IDGAxiosRequestConfig<Endpoint>,
+//   ): Promise<R>;
+//   post<T = unknown, R = AxiosResponse<T>>(
+//     url: Endpoint,
+//     data?: unknown,
+//     config?: IDGAxiosRequestConfig<Endpoint>,
+//   ): Promise<R>;
+//   put<T = unknown, R = AxiosResponse<T>>(
+//     url: Endpoint,
+//     data?: unknown,
+//     config?: IDGAxiosRequestConfig<Endpoint>,
+//   ): Promise<R>;
+//   patch<T = unknown, R = AxiosResponse<T>>(
+//     url: Endpoint,
+//     data?: unknown,
+//     config?: IDGAxiosRequestConfig<Endpoint>,
+//   ): Promise<R>;
+// }
 
 export interface IDGAxiosRequestConfig<Endpoint extends string>
   extends AxiosRequestConfig {

@@ -1,15 +1,24 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootStateObj } from 'src/redux/rootReducer';
-import { BookingInfo, Traveller, TravellerCount } from '../traveller/TravelerModel';
+// import { RootStateObj } from 'src/redux/rootReducer';
+import {
+  BookingInfo,
+  Traveller,
+  TravellerCount,
+} from '../traveller/TravelerModel';
 import {
   FlightFareParam,
   getFlight,
   PlacesParam,
   searchPlaces,
   getFlightFare,
-  GetFlightParam,
 } from './flightApi';
-import { FlightFareResponse, FlightPlaces, FlightResponse } from './FlightModel';
+import {
+  FlightFareResponse,
+  FlightPlaces,
+  FlightResponse,
+} from './FlightModel';
+import { GetFlightParam } from './FlightSearchRequestModel';
+import { RootStateObj } from '../../redux/rootReducer';
 
 // Requesting one page of alerts with loading state, and only one request at a time
 
@@ -46,7 +55,7 @@ export const fetchFlight = createAsyncThunk<
   GetFlightParam,
   // Types for ThunkAPI
   RootStateObj
->('flight/search', async (params) => {
+>('flight/search', async params => {
   return getFlight(params);
 });
 export const fetchFlightPlaces = createAsyncThunk<
@@ -56,7 +65,7 @@ export const fetchFlightPlaces = createAsyncThunk<
   PlacesParam,
   // Types for ThunkAPI
   RootStateObj
->('flight/searchPlaces', async (param) => {
+>('flight/searchPlaces', async param => {
   return searchPlaces(param);
 });
 
@@ -67,7 +76,7 @@ export const fetchFlightFare = createAsyncThunk<
   FlightFareParam,
   // Types for ThunkAPI
   RootStateObj
->('flight/fare', async (param) => {
+>('flight/fare', async param => {
   return getFlightFare(param);
 });
 type AddTraveller = Omit<Traveller, 'id'>;
@@ -85,9 +94,15 @@ export const flightSlice = createSlice({
     addTravelerInfo: (state, action: PayloadAction<AddTraveller>) => {
       const id = state.currentTravellerId;
       if (action.payload.isChild) {
-        state.travellerChild = [...state.travellerChild, { ...action.payload, id }];
+        state.travellerChild = [
+          ...state.travellerChild,
+          { ...action.payload, id },
+        ];
       } else {
-        state.travellerAdult = [...state.travellerAdult, { ...action.payload, id }];
+        state.travellerAdult = [
+          ...state.travellerAdult,
+          { ...action.payload, id },
+        ];
       }
       state.currentTravellerId = id + 1;
     },
@@ -95,7 +110,7 @@ export const flightSlice = createSlice({
       if (action.payload.isChild) {
         const array = [...state.travellerChild];
         const index = array.findIndex(
-          (i) => action.payload.id === i.id
+          i => action.payload.id === i.id,
           // action.payload.dob === i.dob &&
           // action.payload.expDate === i.expDate &&
           // action.payload.fName === i.fName &&
@@ -109,7 +124,7 @@ export const flightSlice = createSlice({
       } else {
         const array = [...state.travellerAdult];
         const index = array.findIndex(
-          (i) => action.payload.id === i.id
+          i => action.payload.id === i.id,
           // action.payload.dob === i.dob &&
           // action.payload.expDate === i.expDate &&
           // action.payload.fName === i.fName &&
@@ -123,9 +138,9 @@ export const flightSlice = createSlice({
       }
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchFlight.pending, (state) => {
+      .addCase(fetchFlight.pending, state => {
         if (state.loading === 'idle') {
           state.loading = 'pending';
         }
@@ -143,7 +158,7 @@ export const flightSlice = createSlice({
           state.error = action.error.message || null;
         }
       })
-      .addCase(fetchFlightPlaces.pending, (state) => {
+      .addCase(fetchFlightPlaces.pending, state => {
         if (state.loading === 'idle') {
           state.loading = 'pending';
         }
@@ -160,7 +175,7 @@ export const flightSlice = createSlice({
           state.error = action.error.message || null;
         }
       })
-      .addCase(fetchFlightFare.pending, (state) => {
+      .addCase(fetchFlightFare.pending, state => {
         if (state.loading === 'idle') {
           state.loading = 'pending';
         }

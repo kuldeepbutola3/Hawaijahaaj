@@ -1,0 +1,16 @@
+Design
+https://xd.adobe.com/view/c903f04d-4c8d-4dba-a2f3-8505b6f5250e-9c50/
+
+Api: 
+https://testapi.gapiinfotech.com/v1/service/search/flights
+
+
+
+Search flights
+/service/search/flights
+
+
+This Api
+service/search/flights
+Basic MTM2NzkyNjk3NTQ6ZjA2MDg3MzgtNTI4MS00ZjE0LWEyNjYtM2M5N2JiOTE0NmNh
+"agency": "testv2.gapiinfotech.com",

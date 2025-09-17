@@ -24,7 +24,7 @@ import FlightClassDropdown from './components/FlightClassDropdown';
 // import { GetFlightParam } from 'src/idg/flight/flightApi';
 // import { FlightPlaces } from 'src/idg/flight/FlightModel';
 // import { Button } from 'src/components/Button';
-// import { useAuraTranslation } from 'src/utils/i18n';
+// import { rocket } from 'src/utils/i18n';
 // import { ScrollView } from 'react-native-gesture-handler';
 import { ClassType, HeaderTabs, TripType } from '../../../../constants/enums';
 import { AuraStackScreen } from '../../../../types/navigationTypes';
@@ -48,6 +48,7 @@ import { Button } from '../../../../components/Button';
 import { Screen } from '../../../../components/Screen';
 import { GradientBackground } from '../../../../components/GradientBackground';
 import { ApptNavigationProp } from '../../../../navigation/AppNav';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 // import { TravellerCount } from 'src/idg/traveller/TravelerModel';
 const CLASS: Array<{ value: ClassType }> = [
@@ -62,7 +63,7 @@ const CLASS: Array<{ value: ClassType }> = [
   },
 ];
 
-const HomeScreen: AuraStackScreen = () => {
+export const HomeScreen: AuraStackScreen = () => {
   const { t } = useAuraTranslation();
   const navigation = useNavigation<ApptNavigationProp>();
 
@@ -70,21 +71,21 @@ const HomeScreen: AuraStackScreen = () => {
     flightSlice.actions.addTravellerCount,
   );
 
-  navigation.setOptions({
-    headerTitle: () => (
-      <Header
-        selectedTab={selectedTab}
-        onPressFlightsTab={handleFlightsTabPress}
-        onPressHotelsTab={handleHotelsTabPress}
-      />
-    ),
-    headerTitleContainerStyle: styles.headerTitleContainerStyle,
-    headerLeftContainerStyle: styles.headerContainerStyle,
-    headerRightContainerStyle: styles.headerContainerStyle,
-    headerTransparent: true,
-    headerTitleAlign: 'center',
-  });
-  const headerHeight = 100; // useHeaderHeight();
+  // navigation.setOptions({
+  //   headerTitle: () => (
+  //     <Header
+  //       selectedTab={selectedTab}
+  //       onPressFlightsTab={handleFlightsTabPress}
+  //       onPressHotelsTab={handleHotelsTabPress}
+  //     />
+  //   ),
+  //   headerTitleContainerStyle: styles.headerTitleContainerStyle,
+  //   headerLeftContainerStyle: styles.headerContainerStyle,
+  //   headerRightContainerStyle: styles.headerContainerStyle,
+  //   headerTransparent: true,
+  //   headerTitleAlign: 'center',
+  // });
+  const headerHeight = 0; // useHeaderHeight();
   const dispatch = useThunkDispatch();
   const { places } = useSliceSelector('flight');
 
@@ -206,7 +207,7 @@ const HomeScreen: AuraStackScreen = () => {
     });
   }, [navigation, travellersCount, setTravellersCount]);
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <GradientBackground
         style={styles.gradientBackground}
         colors={['#4c669f', '#3b5998', '#192f6a']}>
@@ -277,7 +278,7 @@ const HomeScreen: AuraStackScreen = () => {
 
                 {selectedTripType === TripType.RoundTrip ? (
                   <DatePicker
-                    textColor={appColors.black}
+                    // textColor={appColors.black}
                     containerStyle={{ flex: 1 }}
                     onValueChange={returnDateChange}
                     value={returnDate || new Date()}
@@ -370,32 +371,23 @@ const HomeScreen: AuraStackScreen = () => {
           </ScrollView>
         </Screen>
       </GradientBackground>
-    </View>
+    </SafeAreaView>
   );
 };
 
-export type HomeRoutes = {
-  Home: undefined;
-};
+// export type HomeRoutes = {
+//   Home: undefined;
+// };
 
-export type HomeNavigationProp = NavigationProp<HomeRoutes>;
+// export type HomeNavigationProp = NavigationProp<HomeRoutes>;
 
-const Stack = createNativeStackNavigator<HomeRoutes>();
-export const HomeStack = () => {
-  // const { screenOptions, homeScreenOptions } = useStackOptions();
+// const Stack = createNativeStackNavigator<HomeRoutes>();
+// export const HomeStack = () => {
+//   // const { screenOptions, homeScreenOptions } = useStackOptions();
 
-  return (
-    <Stack.Navigator>
-      <Stack.Screen
-        name="Home"
-        component={HomeScreen}
-        // options={homeScreenOptions('homeTitle')}
-      />
-      {/* <Stack.Screen
-        name="FlightList"
-        component={FlightListScreen}
-        options={titleOption('searchListTitle')}
-      /> */}
-    </Stack.Navigator>
-  );
-};
+//   return (
+//     <Stack.Navigator>
+//       <Stack.Screen name="Home" component={HomeScreen} />
+//     </Stack.Navigator>
+//   );
+// };

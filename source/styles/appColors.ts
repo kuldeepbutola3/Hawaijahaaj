@@ -10,4 +10,5 @@ export const appColors = {
   black: 'black',
   white: 'white',
   transparent: 'transparent',
+  button: 'rgb(5,82,100)',
 };

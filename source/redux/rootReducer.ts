@@ -28,7 +28,7 @@ export type RootSelector = (state: RootState) => RootState[keyof RootState];
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage, // or AsyncStorage for RN
-  whitelist: ['app'], // only persist this slice
+  whitelist: [], // ['app'], // only persist this slice
 };
 const rootReducer = persistReducer(persistConfig, combinedReducer);
 
