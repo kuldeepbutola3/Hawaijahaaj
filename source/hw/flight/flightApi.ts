@@ -14,8 +14,13 @@ import { getFlightClassTypeValue } from './flightSearchViewModel';
 const FLIGHT_SEARCH = 'v1/service/search/flights';
 const FLIGHT_PLACES = 'v1/service/search/get_itemName_list';
 const FLIGHT_FARE = 'v1/service/search/fareQuote';
+const FLIGHT_BOOKING = 'v1/service/flightbooking/flight-booking';
 
-export type FlightEndpoint = typeof FLIGHT_SEARCH | typeof FLIGHT_PLACES;
+export type FlightEndpoint =
+  | typeof FLIGHT_SEARCH
+  | typeof FLIGHT_PLACES
+  | typeof FLIGHT_FARE
+  | typeof FLIGHT_BOOKING;
 export const getSessionClient = () => getClient();
 
 export interface PlacesParam {

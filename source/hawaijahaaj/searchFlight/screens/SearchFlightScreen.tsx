@@ -10,7 +10,7 @@
 //   );
 // }
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, FC } from 'react';
 import {
   SafeAreaView,
   View,
@@ -33,379 +33,258 @@ import { Button } from '../../../components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { AppNavigationProp } from '../../../navigation/AppNav';
 import { SearchStackProp } from '../searchStack/SearchStack';
+import { AppHeader } from '../../component/AppHeader';
+import {
+  FlightSearchCard,
+  FlightSearchCardProps,
+} from '../../component/FlightSearchCard';
+import { appColors } from '../../../styles/appColors';
+import { Header } from '../../component/Header';
+import { Segment, SegmentProps } from '../component/Segment';
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
+import { AppModel } from '../../component/AppModal';
+import { FlightClassCard } from '../component/FlightClassCard';
+import { FlightClass, Passenger, TripType } from '../flightSearchModel';
 
-const { width } = Dimensions.get('window');
+// type Timeout = ReturnType<typeof setTimeout>;
 
-// Sample airport data for search:
-// type Places = {
-//    code: string; city: string; name: string
-// }
-// type PlacesViewModels = Array<Places>;
-// const AIRPORTS = [
-//   { code: 'ADL', city: 'Adelaide', name: 'Adelaide Airport' },
-//   { code: 'BOC', city: 'Bocas Del Toro', name: 'Bocas Del Toro Airport' },
-//   { code: 'DDN', city: 'Delta Downs', name: 'Delta Downs Airport' },
-//   { code: 'DEL', city: 'Delhi', name: 'Indira Gandhi International Airport' },
-//   { code: 'DJN', city: 'Delta Junction', name: 'Delta Junction Airport' },
-//   {
-//     code: 'BOM',
-//     city: 'Mumbai',
-//     name: 'Chhatrapati Shivaji International Airport',
-//   },
-// ];
-
-// Trending destinations with images
-// const TRENDING = [
-//   {
-//     id: '1',
-//     city: 'Delhi',
-//     image:
-//       'https://upload.wikimedia.org/wikipedia/commons/c/cd/India_Gate_in_New_Delhi_03-2016_img3.jpg',
-//   },
-//   {
-//     id: '2',
-//     city: 'Mumbai',
-//     image:
-//       'https://upload.wikimedia.org/wikipedia/commons/a/a6/Mumbai_Skyline_2014.jpg',
-//   },
-// ];
-type Timeout = ReturnType<typeof setTimeout>;
-
-// const viewModel: PlacesViewModels = (places : ) => {
-// return
-// }
-type FieldType = 'from' | 'to';
+// type FieldType = 'from' | 'to';
 
 export const SearchFlightScreen = () => {
-  const [loading, setLoading] = useState(false);
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-  const [modalVisible, setModalVisible] = useState(true);
-  const [searchInput, setSearchInput] = useState('');
-  // const [searchResults, setSearchResults] = useState(AIRPORTS);
-  const [activeField, setActiveField] = useState<FieldType | null>('from'); // 'from' or 'to'
+  const [tripType, setTripType] = useState<TripType>('OneWay');
+  const [passengers, setPassengers] = useState<Passenger>({
+    adult: 1,
+    children: 0,
+    infant: 0,
+  });
+  const [flightClass, setFlightClass] = useState<FlightClass>('Economy');
 
-  const dispatch = useThunkDispatch();
-  const searchApiReq = useRef<Timeout>(null);
   const navigation = useNavigation<SearchStackProp>();
   const appNavigation = useNavigation<AppNavigationProp>();
 
   const places = useSliceSelector('flight').places ?? [];
 
-  const onPressSearchLocation = () => {
-    appNavigation.navigate('');
-  };
-
   const onPressNext = () => {
     navigation.navigate('DepartureDate');
   };
-  //search
-  const _setSearchInput = (text: string) => {
-    setLoading(true);
-    setSearchInput(text);
-    if (searchApiReq.current) {
-      clearTimeout(searchApiReq.current);
-      searchApiReq.current = null;
-    }
-    searchApiReq.current = setTimeout(() => {
-      dispatch(fetchFlightPlaces({ term: text })).finally(() => {
-        setLoading(false);
-      });
-    }, 500);
-  };
 
-  // Open modal to pick location, set active field
-  const openModal = (field: FieldType) => {
-    setActiveField(field);
-    setSearchInput('');
-    setModalVisible(true);
-  };
+  const onPressSearchCard: FlightSearchCardProps['onPress'] = sender => {};
 
-  // Select airport from search
-  const selectAirport = (airport: FlightPlaces) => {
-    if (activeField === 'from') {
-      setFrom(`${airport.cityName} (${airport.cityCode})`);
-    } else if (activeField === 'to') {
-      setTo(`${airport.cityName} (${airport.cityCode})`);
-    }
-    setModalVisible(false);
+  const onPressSegment: SegmentProps['onPress'] = sender => {
+    setTripType(sender);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
-        <Ionicons name="person-circle-outline" size={40} color="#555" />
-        <Text style={styles.greeting}>Hi, User</Text>
+      <Header />
+
+      {/* Cards */}
+      <View style={styles.bgCard}>
+        <Segment onPress={onPressSegment} />
+        <FlightSearchCard onPress={onPressSearchCard} />
+        <DateSelectionCard tripType={tripType} />
+        <FlightType
+          initialClass={flightClass}
+          initialPassenger={passengers}
+          getFlightClass={setFlightClass}
+          getPassenger={setPassengers}
+        />
       </View>
-
-      {/* Airplane background */}
-      <ImageBackground
-        source={{
-          uri: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=800&q=60',
-        }}
-        style={styles.airplaneBackground}
-        imageStyle={{ opacity: 0.7 }}>
-        <View style={styles.inputsCard}>
-          <TouchableOpacity
-            style={styles.inputBox}
-            activeOpacity={0.7}
-            onPress={() => openModal('from')}>
-            <Ionicons name="airplane-outline" size={20} color="#ddd" />
-            <Text style={from ? styles.inputText : styles.inputPlaceholder}>
-              {from || 'Origin'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.inputBox}
-            activeOpacity={0.7}
-            onPress={() => openModal('to')}>
-            <Ionicons name="flag-outline" size={20} color="#ddd" />
-            <Text style={to ? styles.inputText : styles.inputPlaceholder}>
-              {to || 'Destination'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ImageBackground>
 
       <View style={{ margin: 24 }}>
         <Button
+          disabled
+          bgColor={appColors.defaultColor}
+          title={'asdhakshdk'}
           onPress={onPressNext}
           // disabled={!from || !to} title={'Next'}
         />
       </View>
-      {/* Trending destinations */}
-      {/* <View style={styles.trendingHeader}>
-        <Text style={styles.trendingTitle}>Trending destinations</Text>
-        <TouchableOpacity>
-          <Text style={styles.seeAll}>See All</Text>
-        </TouchableOpacity>
+    </SafeAreaView>
+  );
+};
+
+/** Show date selection */
+const DateSelectionCard: FC<{ tripType: TripType }> = ({ tripType }) => {
+  return (
+    <View style={styles.card}>
+      <TouchableOpacity style={styles.innerCardLeft}>
+        <Text style={styles.title}>Departure</Text>
+        <Text style={styles.subTitle}>DD-mm-yyyy</Text>
+      </TouchableOpacity>
+      {tripType === 'RoundTrip' ? (
+        <>
+          <View style={styles.arrowBG}>
+            <FontAwesome6
+              name="arrow-right-long"
+              size={24}
+              color={appColors.white}
+            />
+          </View>
+
+          <TouchableOpacity style={styles.innerCardRight}>
+            <Text style={styles.title}>Return</Text>
+            <Text style={styles.subTitle}>DD-mm-yyyy</Text>
+          </TouchableOpacity>
+        </>
+      ) : (
+        <View style={styles.innerCardRight} />
+      )}
+    </View>
+  );
+};
+
+/** Show flight class and passenger  */
+const FlightType: FC<{
+  initialPassenger: Passenger;
+  initialClass: FlightClass;
+  getFlightClass: (sender: FlightClass) => void;
+  getPassenger: (sender: Passenger) => void;
+}> = ({
+  initialPassenger,
+  initialClass = 'Economy',
+  getFlightClass,
+  getPassenger,
+}) => {
+  const [passengers, setPassengers] = useState<Passenger>(initialPassenger);
+  const [flightClass, setFlightClass] = useState<FlightClass>(initialClass);
+
+  const [classModalVisible, setClassModalVisible] = useState<boolean>(false);
+
+  const onPressClass = () => {
+    setClassModalVisible(true);
+  };
+
+  const dismissModal = (sender?: FlightClass) => {
+    setClassModalVisible(false);
+    if (sender) {
+      setFlightClass(sender);
+      getFlightClass(sender);
+    }
+  };
+
+  return (
+    <View style={styles.card}>
+      <TouchableOpacity style={styles.innerCardLeft}>
+        <Text style={styles.title}>Passengers</Text>
+        <Text style={styles.subTitle}>{`${
+          initialPassenger.adult +
+          initialPassenger.children +
+          initialPassenger.infant
+        }`}</Text>
+      </TouchableOpacity>
+
+      <View style={styles.lineBg}>
+        <View style={styles.line} />
       </View>
 
-      
-      <FlatList
-        horizontal
-        data={TRENDING}
-        keyExtractor={item => item.id}
-        contentContainerStyle={{ paddingLeft: 20 }}
-        style={{ flexGrow: 0 }}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <View style={styles.destinationCard}>
-            <Image source={{ uri: item.image }} style={styles.destinationImg} />
-            <Text style={styles.destinationCity}>{item.city}</Text>
-          </View>
-        )}
-      /> */}
+      <TouchableOpacity onPress={onPressClass} style={styles.innerCardRight}>
+        <Text style={styles.title}>Class</Text>
+        <Text style={styles.subTitle}>{flightClass}</Text>
+      </TouchableOpacity>
+      <ShowModelFlightClass
+        initialClass={initialClass}
+        modalVisible={classModalVisible}
+        dismissModal={dismissModal}
+      />
+    </View>
+  );
+};
 
-      {/* Search & dropdown modal */}
-      {/* <Modal visible={modalVisible} animationType="slide" transparent={true}>
-        <SafeAreaView style={styles.modalContainer}>
-          <View style={styles.modalHeader}>
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              style={{ paddingRight: 10 }}>
-              <Ionicons name="arrow-back" size={28} color="#333" />
-            </TouchableOpacity>
-            <TextInput
-              autoFocus={true}
-              placeholder="Search city, airport code..."
-              style={styles.searchInput}
-              value={searchInput}
-              onChangeText={_setSearchInput}
-              clearButtonMode="while-editing"
-            />
-            {searchInput.length > 0 && (
-              <TouchableOpacity onPress={() => setSearchInput('')}>
-                <Ionicons name="close-circle" size={24} color="#888" />
-              </TouchableOpacity>
-            )}
-          </View>
+const ShowModelPassenger: FC<{
+  initialPassenger: Passenger;
+  modalVisible: boolean;
+  dismissModal: (sender?: FlightClass) => void;
+}> = ({ modalVisible, dismissModal, initialPassenger }) => {
+  const onPress = () => {
+    dismissModal();
+  };
 
-          <FlatList
-            data={places}
-            // keyExtractor={item => item.cityCode}
-            keyboardShouldPersistTaps="handled"
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                key={`${index}-${item.countryCode}`}
-                style={styles.searchResultItem}
-                onPress={() => selectAirport(item)}>
-                <Text style={styles.airportCode}>
-                  ({item.cityCode}) {item.cityName}
-                </Text>
-                <Text style={styles.airportName}>{item.cityName}</Text>
-                <Ionicons
-                  name="chevron-forward"
-                  size={20}
-                  color="#999"
-                  style={{ alignSelf: 'center' }}
-                />
-              </TouchableOpacity>
-            )}
-            ListEmptyComponent={
-              <View style={styles.emptyList}>
-                {loading ? (
-                  <ActivityIndicator />
-                ) : (
-                  <Text style={{ color: '#999' }}>No results found</Text>
-                )}
-              </View>
-            }
-          />
-        </SafeAreaView>
-      </Modal> */}
-    </SafeAreaView>
+  const onPressDone = (sender: FlightClass) => {
+    dismissModal(sender);
+  };
+
+  return (
+    <AppModel visible={modalVisible}>
+      <TouchableOpacity onPress={onPress} style={stylesModal.safeArea} />
+    </AppModel>
+  );
+};
+
+const ShowModelFlightClass: FC<{
+  initialClass: FlightClass;
+  modalVisible: boolean;
+  dismissModal: (sender?: FlightClass) => void;
+}> = ({ modalVisible, dismissModal, initialClass }) => {
+  const onPress = () => {
+    dismissModal();
+  };
+
+  const onPressDone = (sender: FlightClass) => {
+    dismissModal(sender);
+  };
+
+  return (
+    <AppModel visible={modalVisible}>
+      <TouchableOpacity onPress={onPress} style={stylesModal.safeArea} />
+      <FlightClassCard onPressDone={onPressDone} initialClass={initialClass} />
+    </AppModel>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#e5f0ff',
+    backgroundColor: appColors.defaultDarkBlueColor,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingTop: 10,
-    paddingBottom: 12,
-  },
-  greeting: {
-    fontSize: 20,
-    marginLeft: 10,
-    fontWeight: '600',
-    color: '#333',
-  },
-  airplaneBackground: {
-    height: 200,
-    justifyContent: 'flex-end',
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-  },
-  inputsCard: {
-    backgroundColor: '#189bfe',
-    borderRadius: 15,
-    paddingVertical: 15,
-    paddingHorizontal: 18,
-    opacity: 0.95,
-  },
-  inputBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#34a3ff',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    marginBottom: 12,
-  },
-  inputPlaceholder: {
-    color: '#c9e6ff',
-    fontSize: 16,
-    marginLeft: 12,
-  },
-  inputText: {
-    color: '#fff',
-    marginLeft: 12,
-    fontWeight: '600',
-    fontSize: 16,
-  },
-  trendingHeader: {
-    flexDirection: 'row',
-    marginTop: 18,
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
-  trendingTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#222',
-  },
-  seeAll: {
-    color: '#0a84ff',
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  destinationCard: {
-    marginRight: 15,
-    borderRadius: 12,
-    width: width * 0.5,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    shadowColor: '#aaa',
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 6,
-  },
-  destinationImg: {
-    height: 140,
-    width: '100%',
-  },
-  destinationCity: {
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    fontWeight: '700',
-    fontSize: 15,
-    color: '#333',
-  },
-
-  // Modal styles
-  modalContainer: {
-    flex: 1,
-    backgroundColor: '#fafafa',
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 18,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    backgroundColor: '#f0f0f0',
-    marginLeft: 6,
-    marginRight: 6,
-  },
-  searchResultItem: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderColor: '#eee',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  airportCode: {
-    fontWeight: '600',
-    fontSize: 16,
-    color: '#111',
-  },
-  airportName: {
-    fontSize: 14,
-    color: '#777',
-    flex: 1,
-    marginLeft: 12,
-  },
-  emptyList: {
-    padding: 50,
+  arrowBG: {
     justifyContent: 'center',
+  },
+  lineBg: {
+    width: 24,
     alignItems: 'center',
+  },
+  line: {
+    flex: 1,
+    width: 1,
+    backgroundColor: appColors.white,
+  },
+  bgCard: {
+    marginHorizontal: 24,
+  },
+  card: {
+    marginTop: 16,
+    backgroundColor: appColors.defaultColor,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: appColors.white,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    paddingVertical: 16,
+  },
+  innerCardLeft: {
+    flex: 1,
+    paddingLeft: 24,
+  },
+  innerCardRight: {
+    flex: 1,
+    marginLeft: 24,
+  },
+  title: {
+    fontSize: 12,
+    color: '#C5D0D4',
+  },
+  subTitle: {
+    marginTop: 4,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: appColors.white,
   },
 });
 
-// const styles = StyleSheet.create({
-//   centered: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-// });
+const stylesModal = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
+});
