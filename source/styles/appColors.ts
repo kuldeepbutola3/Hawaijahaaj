@@ -1,5 +1,8 @@
 export const appColors = {
   defaultColor: 'rgb(0,123,157)',
+  defaultColorStrong: '#003D51',
+  defaultDarkBlueColor: '#003D51',
+  defaultBlueColor: '#0FA5D8',
   pink: 'rgb(88,51,143)',
   lightpink: 'rgb(162,65,165)',
   red: 'rgb(236,73,84)',
@@ -10,4 +13,5 @@ export const appColors = {
   black: 'black',
   white: 'white',
   transparent: 'transparent',
+  button: 'rgb(5,82,100)',
 };

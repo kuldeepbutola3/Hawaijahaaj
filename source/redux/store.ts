@@ -1,23 +1,15 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { configureSubscriber } from '../utils/redux-subscriber';
 import reducer from './rootReducer';
-import {
-  FLUSH,
-  REHYDRATE,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-  persistStore,
-} from 'redux-persist';
+import { persistStore } from 'redux-persist';
 
 const middleware = {
   serializableCheck: false,
   immutableCheck: false,
-  thunk: false,
+  // thunk: false,
   //   immutableCheck: true;
   //   serializableCheck: true;
-  actionCreatorCheck: false,
+  // actionCreatorCheck: false,
 };
 
 export const store = configureStore({

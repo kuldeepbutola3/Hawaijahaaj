@@ -3,8 +3,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StoreProvider } from './provider';
 import I18Provider from './utils/i18n/src/Provider';
 import MainNav from './navigation/MainNav';
-import { View } from 'react-native';
-import { BackgroundObserver } from './component/BackgroundObserver';
 // import { ToastProvider } from './idg/toast/ToastProvider';
 
 // NOTE: Change this boolean to true to render the Storybook view for development!
@@ -26,15 +24,13 @@ class App extends Component<{}> {
     //   return null;
     // }
 
-    // return <View style={{ flex: 1, backgroundColor: 'red' }} />;
-    console.log('isloggedIn..............');
-    // return <MainNav />;
     return (
       <StoreProvider>
-        {/* <BackgroundObserver /> */}
-        <SafeAreaProvider>
-          <MainNav />
-        </SafeAreaProvider>
+        <I18Provider>
+          <SafeAreaProvider>
+            <MainNav />
+          </SafeAreaProvider>
+        </I18Provider>
       </StoreProvider>
     );
     //   return (
